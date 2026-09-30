@@ -1,3 +1,4 @@
+
 * {
     margin: 0;
     padding: 0;
@@ -313,4 +314,82 @@ body {
         height: 230px;
     }
 
+}
+/* =========================
+   ADD TO CART NOTIFICATION
+========================= */
+
+.toast-notification {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) scale(0.9);
+
+    width: 85%;
+    max-width: 340px;
+
+    background: rgba(255, 255, 255, 0.97);
+
+    border-radius: 18px;
+
+    padding: 20px;
+
+    display: flex;
+    align-items: center;
+    gap: 14px;
+
+    box-shadow:
+        0 15px 40px rgba(0, 0, 0, 0.18);
+
+    opacity: 0;
+    visibility: hidden;
+
+    transition:
+        opacity 0.25s ease,
+        transform 0.25s ease;
+
+    z-index: 9999;
+}
+
+.toast-notification.show {
+    opacity: 1;
+    visibility: visible;
+
+    transform:
+        translate(-50%, -50%) scale(1);
+}
+
+.toast-icon {
+    width: 42px;
+    height: 42px;
+
+    border-radius: 50%;
+
+    background: #0077b6;
+    color: white;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    font-size: 22px;
+    font-weight: bold;
+
+    flex-shrink: 0;
+}
+
+.toast-content {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.toast-content strong {
+    font-size: 16px;
+    color: #222;
+}
+
+.toast-content span {
+    font-size: 13px;
+    color: #777;
 }
