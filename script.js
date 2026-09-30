@@ -5,9 +5,11 @@ let cart = [];
    GET TABLE NUMBER FROM URL
 ========================= */
 
-const urlParams = new URLSearchParams(window.location.search);
+const urlParams =
+    new URLSearchParams(window.location.search);
 
-const tableNumber = urlParams.get("table") || "07";
+const tableNumber =
+    urlParams.get("table") || "07";
 
 
 /* =========================
@@ -16,20 +18,25 @@ const tableNumber = urlParams.get("table") || "07";
 
 document.addEventListener("DOMContentLoaded", function () {
 
-    const tableInfo = document.querySelector(".table-info");
+    const tableInfo =
+        document.querySelector(".table-info");
 
-    if (tableInfo) {
-        tableInfo.textContent = "Table " + tableNumber;
+    if (tableInfo) 
+
+        tableInfo.textContent =
+            "Table " + tableNumber;
+
     }
 
-});
+);
 
 
 /* =========================
    ADD TO CART
 ========================= */
 
-function addToCart(name, price) {
+
+    function addToCart(name, price) {
 
     const existingItem =
         cart.find(item => item.name === name);
@@ -41,18 +48,42 @@ function addToCart(name, price) {
     } else {
 
         cart.push({
+
             name: name,
+
             price: price,
+
             quantity: 1
+
         });
 
     }
 
     updateCart();
 
-    alert(name + " added to your order!");
-}
+    showToast(name);
 
+}
+function showToast(itemName) {
+
+    const toast =
+        document.getElementById("toastNotification");
+
+    const message =
+        document.getElementById("toastMessage");
+
+    message.textContent =
+        itemName + " has been added to your order";
+
+    toast.classList.add("show");
+
+    setTimeout(function () {
+
+        toast.classList.remove("show");
+
+    }, 2000);
+
+}
 
 /* =========================
    UPDATE CART
@@ -72,38 +103,57 @@ function updateCart() {
     cartItems.innerHTML = "";
 
     let total = 0;
+
     let count = 0;
 
 
     cart.forEach((item, index) => {
 
-        total += item.price * item.quantity;
+        total +=
+            item.price * item.quantity;
 
-        count += item.quantity;
+        count +=
+            item.quantity;
 
 
         const div =
             document.createElement("div");
 
-        div.className = "cart-item";
+        div.className =
+            "cart-item";
 
 
         div.innerHTML = `
+
             <div>
-                <strong>${item.name}</strong>
+
+                <strong>
+                    ${item.name}
+                </strong>
+
                 <br>
+
                 <small>
                     ₹${item.price} × ${item.quantity}
                 </small>
+
             </div>
 
+
             <div>
+
                 ₹${item.price * item.quantity}
+
                 <br>
-                <button onclick="removeItem(${index})">
+
+                <button
+                    onclick="removeItem(${index})"
+                >
                     Remove
                 </button>
+
             </div>
+
         `;
 
 
@@ -112,9 +162,11 @@ function updateCart() {
     });
 
 
-    cartCount.textContent = count;
+    cartCount.textContent =
+        count;
 
-    cartTotal.textContent = total;
+    cartTotal.textContent =
+        total;
 
 }
 
@@ -166,9 +218,12 @@ async function placeOrder() {
 
     if (cart.length === 0) {
 
-        alert("Your cart is empty.");
+        alert(
+            "Your cart is empty."
+        );
 
         return;
+
     }
 
 
@@ -178,7 +233,8 @@ async function placeOrder() {
     cart.forEach(item => {
 
         total +=
-            item.price * item.quantity;
+            item.price *
+            item.quantity;
 
     });
 
@@ -197,16 +253,25 @@ async function placeOrder() {
     try {
 
         const response = await fetch(
+
             "https://tablebite-backend.onrender.com/api/orders",
+
             {
+
                 method: "POST",
 
                 headers: {
-                    "Content-Type": "application/json"
+
+                    "Content-Type":
+                        "application/json"
+
                 },
 
-                body: JSON.stringify(orderData)
+                body:
+                    JSON.stringify(orderData)
+
             }
+
         );
 
 
@@ -216,24 +281,23 @@ async function placeOrder() {
 
         if (data.success) {
 
-            alert(
-                "Order placed successfully!\n\n" +
-                "Table: " +
-                data.order.table +
-                "\n" +
-                "Order #: " +
-                data.order.id +
-                "\n" +
-                "Total: ₹" +
-                data.order.total
-            );
-
-
             cart = [];
 
             updateCart();
 
             closeCart();
+
+
+            /*
+              OPEN CUSTOMER
+              ORDER STATUS PAGE
+            */
+
+            window.location.href =
+                "order-status.html?order=" +
+                data.order.id +
+                "&table=" +
+                data.order.table;
 
 
         } else {
@@ -254,8 +318,11 @@ async function placeOrder() {
 
 
         alert(
+
             "Could not connect to TABLEBITE server.\n\n" +
+
             "Please make sure the backend is running."
+
         );
 
     }
@@ -270,21 +337,29 @@ async function placeOrder() {
 function filterMenu(category) {
 
     const cards =
-        document.querySelectorAll(".food-card");
+        document.querySelectorAll(
+            ".food-card"
+        );
 
 
     cards.forEach(card => {
 
         if (
+
             category === "all" ||
-            card.dataset.category === category
+
+            card.dataset.category ===
+                category
+
         ) {
 
-            card.style.display = "block";
+            card.style.display =
+                "block";
 
         } else {
 
-            card.style.display = "none";
+            card.style.display =
+                "none";
 
         }
 
@@ -300,32 +375,43 @@ function filterMenu(category) {
 function searchMenu() {
 
     const search =
+
         document
-            .getElementById("searchInput")
+            .getElementById(
+                "searchInput"
+            )
             .value
             .toLowerCase();
 
 
     const cards =
-        document.querySelectorAll(".food-card");
+
+        document.querySelectorAll(
+            ".food-card"
+        );
 
 
     cards.forEach(card => {
 
         const name =
+
             card
                 .querySelector("h3")
                 .textContent
                 .toLowerCase();
 
 
-        if (name.includes(search)) {
+        if (
+            name.includes(search)
+        ) {
 
-            card.style.display = "block";
+            card.style.display =
+                "block";
 
         } else {
 
-            card.style.display = "none";
+            card.style.display =
+                "none";
 
         }
 
