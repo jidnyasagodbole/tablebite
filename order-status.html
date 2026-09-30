@@ -1,0 +1,619 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>TABLEBITE - Order Status</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+        }
+
+        body {
+            background: #f5f7fa;
+            color: #222;
+            min-height: 100vh;
+        }
+
+        .header {
+            background: #111827;
+            color: white;
+            padding: 18px 25px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 24px;
+            font-weight: bold;
+            letter-spacing: 1px;
+        }
+
+        .logo span {
+            color: #f59e0b;
+        }
+
+        .table {
+            font-size: 15px;
+            color: #ddd;
+        }
+
+        .container {
+            max-width: 600px;
+            margin: 50px auto;
+            padding: 20px;
+        }
+
+        .card {
+            background: white;
+            border-radius: 16px;
+            padding: 30px;
+            box-shadow: 0 8px 30px rgba(0,0,0,0.08);
+        }
+
+        h1 {
+            font-size: 28px;
+            margin-bottom: 8px;
+        }
+
+        .subtitle {
+            color: #666;
+            margin-bottom: 25px;
+        }
+
+        .order-number {
+            background: #f3f4f6;
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 30px;
+        }
+
+        .order-number strong {
+            font-size: 20px;
+        }
+
+        .status-list {
+            position: relative;
+            margin-top: 20px;
+        }
+
+        .status {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 28px;
+            position: relative;
+        }
+
+        .circle {
+            width: 42px;
+            height: 42px;
+            border-radius: 50%;
+            background: #e5e7eb;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            color: #777;
+            z-index: 2;
+        }
+
+        .status.active .circle {
+            background: #16a34a;
+            color: white;
+        }
+
+        .status.current .circle {
+            background: #f59e0b;
+            color: white;
+        }
+
+        .status-text h3 {
+            font-size: 17px;
+            margin-bottom: 4px;
+        }
+
+        .status-text p {
+            color: #777;
+            font-size: 14px;
+        }
+
+        .line {
+            width: 3px;
+            height: 28px;
+            background: #e5e7eb;
+            margin-left: 19px;
+            margin-top: -28px;
+            margin-bottom: 0;
+        }
+
+        .line.active {
+            background: #16a34a;
+        }
+
+        .items {
+            border-top: 1px solid #eee;
+            margin-top: 20px;
+            padding-top: 20px;
+        }
+
+        .items h3 {
+            margin-bottom: 12px;
+        }
+
+        .item {
+            display: flex;
+            justify-content: space-between;
+            padding: 8px 0;
+            color: #555;
+        }
+
+        .total {
+            display: flex;
+            justify-content: space-between;
+            font-weight: bold;
+            font-size: 18px;
+            margin-top: 12px;
+            padding-top: 12px;
+            border-top: 1px solid #eee;
+        }
+
+        .message {
+            margin-top: 25px;
+            padding: 15px;
+            border-radius: 10px;
+            background: #fef3c7;
+            color: #92400e;
+            text-align: center;
+            font-weight: 500;
+        }
+
+        .refresh {
+            margin-top: 20px;
+            width: 100%;
+            padding: 13px;
+            border: none;
+            border-radius: 9px;
+            background: #111827;
+            color: white;
+            cursor: pointer;
+            font-size: 15px;
+        }
+
+        .refresh:hover {
+            background: #1f2937;
+        }
+
+        @media (max-width: 600px) {
+            .container {
+                margin: 25px auto;
+            }
+
+            .card {
+                padding: 22px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <header class="header">
+
+        <div class="logo">
+            TABLE<span>BITE</span>
+        </div>
+
+        <div class="table" id="tableNumber">
+            Table 07
+        </div>
+
+    </header>
+
+
+    <main class="container">
+
+        <div class="card">
+
+            <h1>Order Status</h1>
+
+            <p class="subtitle">
+                Track your order in real time.
+            </p>
+
+
+            <div class="order-number">
+
+                <p>Order Number</p>
+
+                <strong id="orderId">
+                    Loading...
+                </strong>
+
+            </div>
+
+
+            <div class="status-list">
+
+                <div class="status" id="statusNew">
+
+                    <div class="circle">
+                        ✓
+                    </div>
+
+                    <div class="status-text">
+
+                        <h3>Order Received</h3>
+
+                        <p>
+                            Your order has been received by the cafe.
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+                <div class="line" id="line1"></div>
+
+
+                <div class="status" id="statusAccepted">
+
+                    <div class="circle">
+                        2
+                    </div>
+
+                    <div class="status-text">
+
+                        <h3>Order Accepted</h3>
+
+                        <p>
+                            The cafe has accepted your order.
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+                <div class="line" id="line2"></div>
+
+
+                <div class="status" id="statusPreparing">
+
+                    <div class="circle">
+                        3
+                    </div>
+
+                    <div class="status-text">
+
+                        <h3>Preparing</h3>
+
+                        <p>
+                            Your food is being prepared.
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+                <div class="line" id="line3"></div>
+
+
+                <div class="status" id="statusReady">
+
+                    <div class="circle">
+                        ✓
+                    </div>
+
+                    <div class="status-text">
+
+                        <h3>Ready</h3>
+
+                        <p>
+                            Your order is ready to collect.
+                        </p>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <div class="items">
+
+                <h3>Your Order</h3>
+
+                <div id="itemsContainer"></div>
+
+                <div class="total">
+
+                    <span>Total</span>
+
+                    <span>
+                        ₹<span id="total">0</span>
+                    </span>
+
+                </div>
+
+            </div>
+
+
+            <div class="message" id="statusMessage">
+                Checking order status...
+            </div>
+
+
+            <button class="refresh" onclick="loadOrder()">
+                Refresh Status
+            </button>
+
+        </div>
+
+    </main>
+
+
+    <script>
+
+        const API_URL =
+            "https://tablebite-backend.onrender.com/api/orders";
+
+
+        const params =
+            new URLSearchParams(window.location.search);
+
+
+        const orderId =
+            params.get("order");
+
+
+        const tableNumber =
+            params.get("table") || "07";
+
+
+        document.getElementById("tableNumber")
+            .textContent = "Table " + tableNumber;
+
+
+        document.getElementById("orderId")
+            .textContent = orderId || "No Order";
+
+
+        async function loadOrder() {
+
+            if (!orderId) {
+
+                document.getElementById("statusMessage")
+                    .textContent =
+                    "No order number was provided.";
+
+                return;
+            }
+
+
+            try {
+
+                const response =
+                    await fetch(API_URL);
+
+
+                const orders =
+                    await response.json();
+
+
+                const order =
+                    orders.find(
+                        item => item.id === orderId
+                    );
+
+
+                if (!order) {
+
+                    document.getElementById("statusMessage")
+                        .textContent =
+                        "Order not found.";
+
+                    return;
+                }
+
+
+                displayOrder(order);
+
+
+            } catch (error) {
+
+                console.error(error);
+
+                document.getElementById("statusMessage")
+                    .textContent =
+                    "Unable to connect to TABLEBITE.";
+
+            }
+
+        }
+
+
+        function displayOrder(order) {
+
+            document.getElementById("orderId")
+                .textContent = order.id;
+
+
+            document.getElementById("total")
+                .textContent = order.total;
+
+
+            const itemsContainer =
+                document.getElementById("itemsContainer");
+
+
+            itemsContainer.innerHTML = "";
+
+
+            order.items.forEach(item => {
+
+                const div =
+                    document.createElement("div");
+
+
+                div.className = "item";
+
+
+                div.innerHTML = `
+
+                    <span>
+                        ${item.name} × ${item.quantity}
+                    </span>
+
+                    <span>
+                        ₹${item.price * item.quantity}
+                    </span>
+
+                `;
+
+
+                itemsContainer.appendChild(div);
+
+            });
+
+
+            updateStatus(order.status);
+
+        }
+
+
+        function updateStatus(status) {
+
+            const statuses = [
+                "NEW",
+                "ACCEPTED",
+                "PREPARING",
+                "READY"
+            ];
+
+
+            const currentIndex =
+                statuses.indexOf(status);
+
+
+            const elements = [
+
+                document.getElementById("statusNew"),
+                document.getElementById("statusAccepted"),
+                document.getElementById("statusPreparing"),
+                document.getElementById("statusReady")
+
+            ];
+
+
+            const lines = [
+
+                document.getElementById("line1"),
+                document.getElementById("line2"),
+                document.getElementById("line3")
+
+            ];
+
+
+            elements.forEach(
+                element =>
+                    element.classList.remove(
+                        "active",
+                        "current"
+                    )
+            );
+
+
+            lines.forEach(
+                line =>
+                    line.classList.remove("active")
+            );
+
+
+            elements.forEach(
+                (element, index) => {
+
+                    if (index < currentIndex) {
+
+                        element.classList.add("active");
+
+                    }
+
+                    if (index === currentIndex) {
+
+                        element.classList.add("current");
+
+                    }
+
+                }
+            );
+
+
+            lines.forEach(
+                (line, index) => {
+
+                    if (index < currentIndex) {
+
+                        line.classList.add("active");
+
+                    }
+
+                }
+            );
+
+
+            const message =
+                document.getElementById("statusMessage");
+
+
+            if (status === "NEW") {
+
+                message.textContent =
+                    "Your order has been received.";
+
+            }
+
+            if (status === "ACCEPTED") {
+
+                message.textContent =
+                    "The cafe has accepted your order.";
+
+            }
+
+            if (status === "PREPARING") {
+
+                message.textContent =
+                    "Your food is being prepared.";
+
+            }
+
+            if (status === "READY") {
+
+                message.textContent =
+                    "🎉 Your order is ready to collect!";
+
+            }
+
+        }
+
+
+        loadOrder();
+
+
+        setInterval(
+            loadOrder,
+            5000
+        );
+
+    </script>
+
+</body>
+</html>
